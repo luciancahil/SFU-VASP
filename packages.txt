@@ -1,0 +1,2 @@
+ip install ase==3.22.1
+pip install scipy==1.9.3
