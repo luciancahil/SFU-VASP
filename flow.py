@@ -45,25 +45,6 @@ calc = vasp_calculator.Vasp(encut=500,
                         )
 
 
-calc2 = vasp_calculator.Vasp(encut=400,
-                        xc='PBE',
-                        gga='PE',
-                        ncore=4,
-                        ivdw=12,
-                        kpts  = (4,4,1),
-                        gamma = True, # Gamma-centered (defaults to Monkhorst-Pack)
-                        ismear=0,
-                        sigma = 0.05,
-                        nelm=400,
-                        algo = 'fast',
-                        ibrion=-1,    # -1 for no relaxation with vasp, 1 otherwise
-                        ediffg=-0.01,  # forces
-                        ediff=1e-5,  #energy conv.
-                        prec='Accurate',
-                        nsw=1, # don't use the VASP internal relaxation, only use ASE
-                        lreal='Auto',
-                        ispin=2 # 1 non-spin-polarized, #2 spin polarized
-                        )
 
 def print_atoms(atoms):
 
@@ -95,7 +76,7 @@ miller_indices = (1, 0, 0)  # Change this to (1,1,1) or any other plane
 # Number of layers and vacuum thickness
 layers = 4  # Adjust as needed
 vacuum = 15.0  # Thickness of vacuum in Å
-
+breakpoint()
 # Create the surface
 slab = surface(atoms, miller_indices, layers, vacuum)
 
