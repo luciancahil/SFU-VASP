@@ -24,25 +24,32 @@ if not isinstance(vasp_path, str):
 num_cores = int(os.environ.get('SLURM_NPROCS', 1))
 npar_setting = 2**ceil(log(floor(sqrt(num_cores)), 2)) # NPAR must be a divisor of the number of cores. Assumed to be a power of 2.
 
-calc = vasp_calculator.Vasp(encut=500,
-                        xc='PBE',
-                        gga='PE',
-                        ncore=4,
-                        ivdw=12,
-                        kpts  = (4,4,1),
-                        gamma = True, # Gamma-centered (defaults to Monkhorst-Pack)
-                        ismear=0,
-                        sigma = 0.05,
-                        nelm=400,
-                        algo = 'fast',
-                        ibrion=-1,    # -1 for no relaxation with vasp, 1 otherwise
-                        ediffg=-0.01,  # forces
-                        ediff=1e-5,  #energy conv.
-                        prec='Accurate',
-                        nsw=1, # don't use the VASP internal relaxation, only use ASE
-                        lreal='Auto',
-                        ispin=-1 # 1 non-spin-polarized, #2 spin polarized
-                        )
+
+# Default settings
+calc_settings = {
+    'encut':500,
+    'xc':'PBE',
+    'gga':'PE',
+    'ncore':4,
+    'ivdw':12,
+    'kpts'  : (4,4,1),
+    'gamma' : True, # Gamma-centered (defaults to Monkhorst-Pack)
+    'ismear':0,
+    'sigma' : 0.05,
+    'nelm':400,
+    'algo' : 'fast',
+    'ibrion':-1,    # -1 for no relaxation with vasp, 1 otherwise
+    'ediffg':-0.01,  # forces
+    'ediff':1e-5,  #energy conv.
+    'prec':'Accurate',
+    'nsw':1, # don't use the VASP internal relaxation, only use ASE
+    'lreal':'Auto',
+    'ispin':-1 # 1 non-spin-polarized, #2 spin polarized
+}
+
+# TODO: Process. Get files.
+
+calc = vasp_calculator.Vasp(**calc_settings)
 
 
 
@@ -68,11 +75,12 @@ def relax(atoms, name):
 atoms = read("TaAgO3.poscar")
 file_header = "bulk"
 
-relax(atoms, "bulk")
+#relax(atoms, "bulk")
 
 # Define the Miller indices (h, k, l) for the surface
 miller_indices = (1, 0, 0)  # Change this to (1,1,1) or any other plane
 
+# TODO: Fix cell, duplicate in Y direction.
 # Number of layers and vacuum thickness
 layers = 4  # Adjust as needed
 vacuum = 15.0  # Thickness of vacuum in Å
@@ -80,12 +88,16 @@ breakpoint()
 # Create the surface
 slab = surface(atoms, miller_indices, layers, vacuum)
 
+
+write('slab.traj', slab)
+
+1/0
 slab.pbc = [True, True, True]
 
 
 # Freeze the bottom two layers
 z_positions = slab.get_positions()[:, 2]
-threshold = sorted(z_positions)[int(len(z_positions) * 1 / 2)]  # freeze bottom 2 of 6
+threshold = sorted(z_positions)[int(len(z_positions) * 1 / 2)]  # freeze bottom 2 of 4
 frozen_indices = [i for i, z in enumerate(z_positions) if z < threshold]
 slab.set_constraint(FixAtoms(indices=frozen_indices))
 
