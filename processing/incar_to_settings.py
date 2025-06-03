@@ -16,4 +16,4 @@ for line in input:
 
     output.write("{},{}\n".format(parts[0].strip().lower(), parts[1].strip()))
 
-output.write("kpoints,{}\n".format(args.kpoint))
+output.write("kpts,{}\n".format(args.kpoint))

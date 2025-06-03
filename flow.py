@@ -59,7 +59,7 @@ for line in settings:
         pass
 
 
-    if(key == "kpoints"):
+    if(key == "kpts"):
         val = int(val)
         calc_settings[key] = (val, val, 1)
     else:
@@ -109,7 +109,6 @@ miller_indices = (1, 0, 0)  # Change this to (1,1,1) or any other plane
 # Number of layers and vacuum thickness
 layers = 4  # Adjust as needed
 vacuum = 15.0  # Thickness of vacuum in Å
-breakpoint()
 # Create the surface
 slab = surface(atoms, miller_indices, layers, vacuum)
 
