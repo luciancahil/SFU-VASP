@@ -14,19 +14,8 @@ from ase.build.tools import sort
 import traceback
 
 
-name = "Bi2Ru2O7"
-
-type = "poscar"
-
-atoms = read("./POSCARS/{}.{}".format(name, type))
 
 
-
-name = "Bi2Ru2O7"
-
-type = "poscar"
-
-atoms = read("./POSCARS/{}.{}".format(name, type))
 
 
 def fix_slab(old_slab, miller_index, remove_from_top, primitive_num_atoms, vacuum):
@@ -66,6 +55,10 @@ def fix_slab(old_slab, miller_index, remove_from_top, primitive_num_atoms, vacuu
 
     return slab
 
+
+
+
+# MAIN
 alpha_remove = 6
 beta_remove = 17
 
@@ -73,6 +66,15 @@ beta_remove = 17
 miller_indices = (1, 0, 0)  # Change this to (1,1,1) or any other plane
 
 layers = 2
+
+name = "Bi2Ru2O7"
+
+format = "poscar"
+
+atoms = read("./POSCARS/{}.{}".format(name, format))
+
+
+
 # Create the surface
 dummy_slab = surface(atoms, miller_indices, 1, 0)
 height = dummy_slab.cell[2][2]
@@ -89,9 +91,10 @@ slab = fix_slab(slab, miller_indices, -1, primitive_num_atoms, vacuum)
 slab_alpha = fix_slab(slab_alpha, miller_indices, alpha_remove, primitive_num_atoms, vacuum)
 slab_beta = fix_slab(slab_beta, miller_indices, beta_remove, primitive_num_atoms, vacuum)
 
-small_name = '{}_{}{}{}_slab.traj'.format(name, miller_indices[0], miller_indices[1], miller_indices[2])
-alpha_name = '{}_{}{}{}_slab_alpha.traj'.format(name, miller_indices[0], miller_indices[1], miller_indices[2])
-beta_name = '{}_{}{}{}_slab_beta.traj'.format(name, miller_indices[0], miller_indices[1], miller_indices[2])
+core_name = './slabs/{}_{}{}{}_slab'.format(name, miller_indices[0], miller_indices[1], miller_indices[2])
+small_name = core_name + ".traj"
+alpha_name = core_name + "_alpha.traj"
+beta_name = core_name + "_beta.traj"
 
 
 write(small_name, slab)
@@ -99,5 +102,20 @@ write(alpha_name, slab_alpha)
 write(beta_name, slab_beta)
 
 print("ase gui {}".format(small_name))
-print("ase gui {}".format(beta_name))
 print("ase gui {}".format(alpha_name))
+print("ase gui {}".format(beta_name))
+
+
+
+"""
+How to use.
+
+1. Place the poscar of the primitive cell into the POSCARS folder.
+2. Set "name" to the name of the file, minus the ".poscar" suffix. If you are using a different format, change the "format" variable
+3. Set the miller indicies, amount of vacuum in Angstroms you want, and the number of layers you want.
+4. Run once, and type the first "ase gui" command to see the slab generated.
+5. Count how many atoms you want remvoed from the top for both the alpha and beta time. Set "alpha_remove" and "beta_remove" to those values (may often remove 0 from alpha).
+6. Run again, and check your final structures to see if you're happy with them
+
+
+"""

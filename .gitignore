@@ -4,3 +4,6 @@ processing/*
 !processing/process_incar.sh
 
 /*.traj
+
+slabs/*
+!slabs/dummy.txt
