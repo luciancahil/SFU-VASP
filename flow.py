@@ -61,7 +61,7 @@ for line in settings:
 
     if(key == "kpoints"):
         val = int(val)
-        calc_settings[key] = [val, val, 1]
+        calc_settings[key] = (val, val, 1)
     else:
         calc_settings[key] = val
 
