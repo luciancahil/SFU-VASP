@@ -54,7 +54,7 @@ calc_settings = {
 # TODO: Process. Get files.
 
 print("Warning: This file should never be run from the main folder. It should always be run from a child folder of the main folder.")
-settings = open("../processing/settings.csv", mode='r')
+settings = open("../../processing/settings.csv", mode='r')
 
 magmoms = None
 
@@ -87,12 +87,11 @@ for line in settings:
 
 calc = vasp_calculator.Vasp(**calc_settings)
 
-atoms = read("../POSCARS/TaAgO3.poscar")
+atoms = read("../../POSCARS/TaAgO3.poscar")
 file_header = "bulk"
 
 if(magmoms != None):
     atoms.set_initial_magnetic_moments([magmoms[atom.symbol] for atom in atoms])
-breakpoint()
 
 
 # Check if vasp path set correctly, if not, exit early

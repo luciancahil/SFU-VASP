@@ -7,3 +7,7 @@ processing/*
 
 slabs/*
 !slabs/dummy.txt
+
+jobs/*
+
+!jobs/clear_jobs.sh

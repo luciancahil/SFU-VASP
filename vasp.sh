@@ -51,18 +51,9 @@ echo "####################################
 # Get the job's cwd
 cwd=$(pwd -P)
 
-timestamp=$(date +%s)
-echo $timestamp
-
-mainFolder=$CRYSTAL$timestamp
-
-mkdir $mainFolder -p
-echo $mainFolder
-
-cd $mainFolder
 
 # Start the job
-time python3 ../flow.py --crystal $CRYSTAL
+time python3 ./../../flow.py --crystal $CRYSTAL
 
 # End timing the entire job
 end_time=$(date +%s)
@@ -71,4 +62,4 @@ end_time=$(date +%s)
 elapsed_time=$((end_time - start_time))
 elapsed_time_hms=$(printf "%02d:%02d:%02d" $((elapsed_time / 3600)) $(( (elapsed_time % 3600) / 60 )) $((elapsed_time % 60)))
 echo "Task ${SLURM_JOB_ID} completed in $elapsed_time_hms (HH:MM:SS)." 
-echo "Look in ${mainFolder} for files"
+echo $(pwd)
