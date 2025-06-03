@@ -59,13 +59,13 @@ def fix_slab(old_slab, miller_index, remove_from_top, primitive_num_atoms, vacuu
 
 
 # MAIN
-alpha_remove = 6
-beta_remove = 17
+alpha_remove = 1
+beta_remove = 12
 
 # Define the Miller indices (h, k, l) for the surface
 miller_indices = (1, 0, 0)  # Change this to (1,1,1) or any other plane
 
-layers = 2
+layers = 3
 
 name = "Bi2Ru2O7"
 
