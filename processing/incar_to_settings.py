@@ -8,12 +8,18 @@ args = parser.parse_args()
 
 input = open("INCAR", mode='r')
 
-output = open("settings.csv", mode='w')
+output = open("AgTaO3.csv", mode='x')
 
 
 for line in input:
     parts = line.split("=")
 
-    output.write("{},{}\n".format(parts[0].strip().lower(), parts[1].strip()))
+    if(parts[0].strip() == "MAGMOM"):
+        output.write("{},{}\n".format(parts[0].strip().lower(), -1))
+        print("WARNING: Make sure to edit your MAGMOM field according to the README. The file will not work currently")
+    else:
+        output.write("{},{}\n".format(parts[0].strip().lower(), parts[1].strip()))
 
 output.write("kpts,{}\n".format(args.kpoint))
+
+

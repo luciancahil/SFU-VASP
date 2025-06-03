@@ -19,7 +19,7 @@ import argparse
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--crystal', type=str, default=None, help='The path to crystal we want to relax.', required=True)
-parser.add_argument('--settings', type=str, default=None, help='The crystal we want to relax.')
+parser.add_argument('--settings', type=str, default=None, help='The path to the settings folder.')
 
 args = parser.parse_args()
 
@@ -54,7 +54,7 @@ calc_settings = {
 # TODO: Process. Get files.
 
 print("Warning: This file should never be run from the main folder. It should always be run from a child folder of the main folder.")
-settings = open("../../processing/settings.csv", mode='r')
+settings = open("../../processing/".format(args.settings), mode='r')
 
 magmoms = None
 
@@ -87,7 +87,7 @@ for line in settings:
 
 calc = vasp_calculator.Vasp(**calc_settings)
 
-atoms = read("../../POSCARS/TaAgO3.poscar")
+atoms = read("../../POSCARS/{}".format(args.crystal))
 file_header = "bulk"
 
 if(magmoms != None):
