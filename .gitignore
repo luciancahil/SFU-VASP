@@ -2,3 +2,5 @@ processing/*
 
 !processing/incar_to_settings.py
 !processing/process_incar.sh
+
+/*.traj

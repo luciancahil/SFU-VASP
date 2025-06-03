@@ -34,8 +34,9 @@ def fix_slab(old_slab, miller_index):
     
     
     # take the average of the 2 middle ones as a cutoff
+
     threshold = (sorted_z[halfway_atom] + sorted_z[halfway_atom - 1]) / 2
-    
+
     frozen_indices = [i for i, z in enumerate(z_positions) if z <= threshold]
 
 
@@ -45,13 +46,12 @@ def fix_slab(old_slab, miller_index):
 
     return slab
 
-name = "TaAgO3"
+name = "Bi2Ru2O7"
 
 type = "poscar"
 
 atoms = read("./POSCARS/{}.{}".format(name, type))
 
-height = atoms.cell[2][2]
 
 # Define the Miller indices (h, k, l) for the surface
 miller_indices = (1, 1, 1)  # Change this to (1,1,1) or any other plane
@@ -61,18 +61,19 @@ miller_indices = (1, 1, 1)  # Change this to (1,1,1) or any other plane
 layers = 4  # Adjust as needed
 vacuum = 10.0  # Thickness of vacuum in Å
 # Create the surface
+dummy_slab = surface(atoms, miller_indices, 1, 0)
+height = dummy_slab.cell[2][2]
 
-slab = surface(atoms, miller_indices, layers, vacuum)
-slab_beta = surface(atoms, miller_indices, layers + 1, vacuum - height / 2)
+slab = surface(atoms, miller_indices, layers, vacuum=0)
+slab_beta = surface(atoms, miller_indices, layers + 1, vacuum = 0)
 
 # filter out the top half of the top cell and bottom half of the bottom cell
-z_pos =  (slab_beta.get_positions()[:, 2])
-lowest_pos = min(z_pos) + height / 4
-highest_pos = max(z_pos) - height / 4
 
-([(atom.index, atom.position[2]) for atom in slab_beta if (atom.position[2] > highest_pos or atom.position[2] < lowest_pos)])
+index_height_pair = [(a.index, a.position[2].item()) for a in slab_beta]
 
-del slab_beta[[atom.index for atom in slab_beta if (atom.position[2] > highest_pos or atom.position[2] < lowest_pos)]]
+index_height_pair = sorted(index_height_pair, key= lambda x:x[1])
+
+
 
 
 slab = fix_slab(slab, miller_indices)
@@ -86,7 +87,7 @@ slab_beta = fix_slab(slab_beta, miller_indices)
 
 
 write('{}_{}{}{}_slab.traj'.format(name, miller_indices[0], miller_indices[1], miller_indices[2]), slab)
-write('{}_{}{}{}_slab_beta.traj'.format(name, miller_indices[0], miller_indices[1], miller_indices[2]), slab_beta)
+write('{}_{}{}{}_slab_extra.traj'.format(name, miller_indices[0], miller_indices[1], miller_indices[2]), slab_beta)
 print(slab.cell)
 print("ase gui {}_{}{}{}_slab.traj".format(name, miller_indices[0], miller_indices[1], miller_indices[2]))
-print("ase gui {}_{}{}{}_slab_beta.traj".format(name, miller_indices[0], miller_indices[1], miller_indices[2]))
+print("ase gui {}_{}{}{}_slab_extra.traj".format(name, miller_indices[0], miller_indices[1], miller_indices[2]))
