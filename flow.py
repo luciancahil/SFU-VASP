@@ -13,13 +13,8 @@ from ase.visualize import view
 from ase.constraints import FixAtoms
 
 import traceback
+import numpy as np
 
-
-# Check if vasp path set correctly, if not, exit early
-vasp_path = os.environ.get('EBROOTVASP') #EBROOTVASP, Niagara = SCINET_VASP_ROOT
-print("Vasp_path: {}".format(vasp_path))
-if not isinstance(vasp_path, str):  
-    exit()
 
 num_cores = int(os.environ.get('SLURM_NPROCS', 1))
 npar_setting = 2**ceil(log(floor(sqrt(num_cores)), 2)) # NPAR must be a divisor of the number of cores. Assumed to be a power of 2.
@@ -47,9 +42,39 @@ calc_settings = {
     'ispin':-1 # 1 non-spin-polarized, #2 spin polarized
 }
 
+print("Hi!")
+
+
 # TODO: Process. Get files.
 
+settings = open("processing/settings.csv", mode='r')
+
+
+for line in settings:
+    parts = line.strip().split(",")
+    key = parts[0]
+    try:
+        val = float(parts[1])
+    except:
+        pass
+
+
+    if(key == "kpoints"):
+        val = int(val)
+        calc_settings[key] = [val, val, 1]
+    else:
+        calc_settings[key] = val
+
 calc = vasp_calculator.Vasp(**calc_settings)
+
+
+# Check if vasp path set correctly, if not, exit early
+vasp_path = os.environ.get('EBROOTVASP') #EBROOTVASP, Niagara = SCINET_VASP_ROOT
+print("Vasp_path: {}".format(vasp_path))
+if not isinstance(vasp_path, str):  
+    exit()
+
+
 
 
 
