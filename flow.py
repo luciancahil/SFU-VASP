@@ -27,7 +27,7 @@ args = parser.parse_args()
 num_cores = int(os.environ.get('SLURM_NPROCS', 1))
 npar_setting = 2**ceil(log(floor(sqrt(num_cores)), 2)) # NPAR must be a divisor of the number of cores. Assumed to be a power of 2.
 
-
+breakpoint()
 # Default settings
 calc_settings = {
     'encut':500,
@@ -54,7 +54,7 @@ calc_settings = {
 # TODO: Process. Get files.
 
 print("Warning: This file should never be run from the main folder. It should always be run from a child folder of the main folder.")
-settings = open("../../processing/".format(args.settings), mode='r')
+settings = open("../../processing/{}".format(args.settings), mode='r')
 
 magmoms = None
 

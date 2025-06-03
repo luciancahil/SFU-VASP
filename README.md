@@ -1,1 +1,12 @@
 # SFU-VASP
+
+
+# STEP 1 Download
+
+
+# STEP 2 Create SLAB
+
+
+# STEP 3 GET PARAMETERS
+
+# STEP 4 RUN JOB

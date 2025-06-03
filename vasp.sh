@@ -53,7 +53,7 @@ cwd=$(pwd -P)
 
 
 # Start the job
-time python3 ./../../flow.py --crystal $CRYSTAL
+time python3 ./../../flow.py --crystal $CRYSTAL --settings $SETTINGS
 
 # End timing the entire job
 end_time=$(date +%s)

@@ -6,9 +6,9 @@ parser.add_argument('--kpoint', type=str, default=None, help='K-point coordinate
 args = parser.parse_args()
 
 
-input = open("INCAR", mode='r')
+input = open("Ru2Bi2O7.txt", mode='r')
 
-output = open("AgTaO3.csv", mode='x')
+output = open("Ru2Bi2O7.csv", mode='x')
 
 
 for line in input:
