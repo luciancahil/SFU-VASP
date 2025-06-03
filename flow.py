@@ -14,6 +14,14 @@ from ase.constraints import FixAtoms
 
 import traceback
 import numpy as np
+import argparse
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('--crystal', type=str, default=None, help='The path to crystal we want to relax.', required=True)
+parser.add_argument('--settings', type=str, default=None, help='The crystal we want to relax.')
+
+args = parser.parse_args()
 
 
 num_cores = int(os.environ.get('SLURM_NPROCS', 1))
@@ -42,30 +50,49 @@ calc_settings = {
     'ispin':-1 # 1 non-spin-polarized, #2 spin polarized
 }
 
-print("Hi!")
-
 
 # TODO: Process. Get files.
 
-settings = open("processing/settings.csv", mode='r')
+print("Warning: This file should never be run from the main folder. It should always be run from a child folder of the main folder.")
+settings = open("../processing/settings.csv", mode='r')
 
+magmoms = None
 
 for line in settings:
     parts = line.strip().split(",")
     key = parts[0]
-    try:
-        val = float(parts[1])
-    except:
-        pass
+    val = parts[1]
 
 
     if(key == "kpts"):
         val = int(val)
         calc_settings[key] = (val, val, 1)
+    elif(key == "magmom"):
+        if(val == -1):
+            raise("The magmom is not configure properly. Please see the README for how to configure")
+
+        magmoms = dict()
+
+        pairs = val.split(" ")
+        for pair in pairs:
+
+            magmoms[pair.split(":")[0]] = float(pair.split(":")[1])
     else:
+        try:
+            val = float(val)
+        except:
+            pass
+
         calc_settings[key] = val
 
 calc = vasp_calculator.Vasp(**calc_settings)
+
+atoms = read("../POSCARS/TaAgO3.poscar")
+file_header = "bulk"
+
+if(magmoms != None):
+    atoms.set_initial_magnetic_moments([magmoms[atom.symbol] for atom in atoms])
+breakpoint()
 
 
 # Check if vasp path set correctly, if not, exit early
@@ -96,44 +123,22 @@ def relax(atoms, name):
     write(final_file,atoms)
 
 
-# Read the bulk structure
-atoms = read("TaAgO3.poscar")
-file_header = "bulk"
 
 #relax(atoms, "bulk")
 
-# Define the Miller indices (h, k, l) for the surface
-miller_indices = (1, 0, 0)  # Change this to (1,1,1) or any other plane
-
-# TODO: Fix cell, duplicate in Y direction.
-# Number of layers and vacuum thickness
-layers = 4  # Adjust as needed
-vacuum = 15.0  # Thickness of vacuum in Å
-# Create the surface
-slab = surface(atoms, miller_indices, layers, vacuum)
-
-
-write('slab.traj', slab)
-
-1/0
-slab.pbc = [True, True, True]
-
-
-# Freeze the bottom two layers
-z_positions = slab.get_positions()[:, 2]
-threshold = sorted(z_positions)[int(len(z_positions) * 1 / 2)]  # freeze bottom 2 of 4
-frozen_indices = [i for i, z in enumerate(z_positions) if z < threshold]
-slab.set_constraint(FixAtoms(indices=frozen_indices))
-
 try:
-    relax(slab, "slab")
+    relax(atoms, "slab")
 except(ValueError):
     print(traceback.format_exc())
     calc.set(sigma = 0.2)
-    relax(slab, "slab")
+    relax(atoms, "slab")
 
-write('slab.traj', slab)
+write('slab.traj', atoms)
 
+
+
+
+"""
 Atoms.calc = None
 calc.set(ispin = 2)
 
@@ -167,3 +172,4 @@ print_atoms(atoms)
 relax(atoms, "CO2")
 
 # relax
+"""

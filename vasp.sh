@@ -10,6 +10,11 @@
 #SBATCH --output=DFT.txt
 #SBATCH --error=DFT_Error.txt
 
+
+
+CRYSTAL=$1
+SETTINGS=$2
+
 # Start timing the entire job
 start_time=$(date +%s)
 
@@ -23,7 +28,7 @@ module load vasp/6.4.2
 if [[ $(module list | grep 'intel/2023') == ""  || $(module list | grep 'python/3.11.5') == "" || $(module list | grep 'vasp/6.4.2') == "" ]]; then
 	module list
 	echo "Your modules are not loaded correctly for VASP. Cancelling job... "
-	exit 1
+
 else
 	module list
 	echo "Your modules are loaded correctly for VASP. Proceeding to activate ASE..."
@@ -46,8 +51,18 @@ echo "####################################
 # Get the job's cwd
 cwd=$(pwd -P)
 
+timestamp=$(date +%s)
+echo $timestamp
+
+mainFolder=$CRYSTAL$timestamp
+
+mkdir $mainFolder -p
+echo $mainFolder
+
+cd $mainFolder
+
 # Start the job
-time python3 flow.py
+time python3 ../flow.py --crystal $CRYSTAL
 
 # End timing the entire job
 end_time=$(date +%s)
@@ -56,3 +71,4 @@ end_time=$(date +%s)
 elapsed_time=$((end_time - start_time))
 elapsed_time_hms=$(printf "%02d:%02d:%02d" $((elapsed_time / 3600)) $(( (elapsed_time % 3600) / 60 )) $((elapsed_time % 60)))
 echo "Task ${SLURM_JOB_ID} completed in $elapsed_time_hms (HH:MM:SS)." 
+echo "Look in ${mainFolder} for files"
