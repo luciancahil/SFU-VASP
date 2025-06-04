@@ -28,4 +28,5 @@ echo bash vasp.sh $CRYSTAL $SETTINGS
 if [ -z "$REAL" ]; then
   echo "Exiting withotu running"
   exit 0
+fi
 sbatch vasp.sh $CRYSTAL $SETTINGS
