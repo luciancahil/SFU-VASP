@@ -27,7 +27,6 @@ args = parser.parse_args()
 num_cores = int(os.environ.get('SLURM_NPROCS', 1))
 npar_setting = 2**ceil(log(floor(sqrt(num_cores)), 2)) # NPAR must be a divisor of the number of cores. Assumed to be a power of 2.
 
-breakpoint()
 # Default settings
 calc_settings = {
     'encut':500,
