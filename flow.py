@@ -92,6 +92,7 @@ file_header = "bulk"
 if(magmoms != None):
     atoms.set_initial_magnetic_moments([magmoms[atom.symbol] for atom in atoms])
 
+atoms.pbc = True
 
 # Check if vasp path set correctly, if not, exit early
 vasp_path = os.environ.get('EBROOTVASP') #EBROOTVASP, Niagara = SCINET_VASP_ROOT
