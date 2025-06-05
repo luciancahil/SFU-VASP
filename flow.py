@@ -81,7 +81,7 @@ for line in settings:
     else:
         if(val == "True" or val == "False"):
             val = bool(val)
-        elif(val in calc.int_params):
+        elif(key in calc.int_params):
             val = int(val)
         else:
             try:
@@ -99,7 +99,6 @@ calc_settings['ncore'] = num_cores
 
 
 
-breakpoint()
 
 calc = vasp_calculator.Vasp(**calc_settings)
 
