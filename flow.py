@@ -28,7 +28,9 @@ num_cores = int(os.environ.get('SLURM_NPROCS', 1))
 npar_setting = 2**ceil(log(floor(sqrt(num_cores)), 2)) # NPAR must be a divisor of the number of cores. Assumed to be a power of 2.
 
 # Default settings
-calc_settings = {
+calc_settings = dict()
+
+"""
     'encut':500,
     'xc':'PBE',
     'gga':'PE',
@@ -48,11 +50,10 @@ calc_settings = {
     'lreal':'Auto',
     'ispin':-1 # 1 non-spin-polarized, #2 spin polarized
 }
-
+"""
 # dummy calc to get list of int things
 calc = vasp_calculator.Vasp(**calc_settings)
 
-# TODO: Process. Get files.
 
 print("Warning: This file should never be run from the main folder. It should always be run from a child folder of the main folder.")
 settings = open("../../processing/{}".format(args.settings), mode='r')
@@ -98,6 +99,9 @@ calc_settings['npar'] = npar_setting
 calc_settings['ncore'] = num_cores
 
 
+# cannot have both gga and metagga
+
+breakpoint()
 
 
 calc = vasp_calculator.Vasp(**calc_settings)
