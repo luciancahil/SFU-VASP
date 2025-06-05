@@ -88,6 +88,12 @@ for line in settings:
         print(val)
         calc_settings[key] = val
 
+
+
+calc_settings['npar'] = npar_setting
+calc_settings['ncore'] = num_cores
+
+
 calc = vasp_calculator.Vasp(**calc_settings)
 
 atoms = read("../../POSCARS/{}".format(args.crystal))
