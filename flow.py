@@ -77,11 +77,15 @@ for line in settings:
 
             magmoms[pair.split(":")[0]] = float(pair.split(":")[1])
     else:
-        try:
-            val = float(val)
-        except:
-            pass
-
+        if(val == "True" or val == "False"):
+            val = bool(val)
+        else:
+            try:
+                val = float(val)
+            except:
+                pass
+            
+        print(val)
         calc_settings[key] = val
 
 calc = vasp_calculator.Vasp(**calc_settings)
@@ -96,9 +100,7 @@ atoms.pbc = True
 
 # Check if vasp path set correctly, if not, exit early
 vasp_path = os.environ.get('EBROOTVASP') #EBROOTVASP, Niagara = SCINET_VASP_ROOT
-print("Vasp_path: {}".format(vasp_path))
-if not isinstance(vasp_path, str):  
-    exit()
+
 
 
 
