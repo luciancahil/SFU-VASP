@@ -49,6 +49,8 @@ calc_settings = {
     'ispin':-1 # 1 non-spin-polarized, #2 spin polarized
 }
 
+# dummy calc to get list of int things
+calc = vasp_calculator.Vasp(**calc_settings)
 
 # TODO: Process. Get files.
 
@@ -79,6 +81,8 @@ for line in settings:
     else:
         if(val == "True" or val == "False"):
             val = bool(val)
+        elif(val in calc.int_params):
+            val = int(val)
         else:
             try:
                 val = float(val)
@@ -93,6 +97,9 @@ for line in settings:
 calc_settings['npar'] = npar_setting
 calc_settings['ncore'] = num_cores
 
+
+
+breakpoint()
 
 calc = vasp_calculator.Vasp(**calc_settings)
 
